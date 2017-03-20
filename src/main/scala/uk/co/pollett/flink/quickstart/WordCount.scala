@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat
 import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
-import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.connectors.elasticsearch2.{ElasticsearchSink, ElasticsearchSinkFunction, RequestIndexer}
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.Requests
@@ -18,17 +17,14 @@ object WordCount {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
     val uniqueStream = env.addSource(new Source("http://feeds.bbci.co.uk/news/rss.xml"))
-      .map(e => (e.link, e))
+      .map(e => (e.link, e)).name("create tuple")
       .keyBy(0)
-      .flatMap(new DuplicateFilter[(String, Entry)]())
+      .flatMap(new DuplicateFilter[(String, Entry)]()).name("dedupe")
 
-    val stream = uniqueStream.map(e => (e._2.title, e._2, 1)).name("create tuple")
+    val stream = uniqueStream.map(e => e._2).name("reduce tuple")
       .filter {
-        !_._1.isEmpty
+        !_.title.isEmpty
       }.name("remove blanks")
-      .keyBy(0)
-      .timeWindow(Time.seconds(3))
-      .sum(2).name("sum")
 
     val config = new java.util.HashMap[String, String]
     config.put("cluster.name", "elasticsearch")
@@ -39,21 +35,21 @@ object WordCount {
     transportAddresses.add(new InetSocketAddress(InetAddress.getByName("hostname"), 10026))
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
-    stream.addSink(new ElasticsearchSink(config, transportAddresses, new ElasticsearchSinkFunction[(String, Entry, Int)] {
-      def createIndexRequest(element: (String, Entry, Int)): IndexRequest = {
+    stream.addSink(new ElasticsearchSink(config, transportAddresses, new ElasticsearchSinkFunction[Entry] {
+      def createIndexRequest(element: Entry): IndexRequest = {
         val json = new java.util.HashMap[String, String]
-        json.put("title", element._2.title)
-        json.put("link", element._2.link)
-        json.put("desc", element._2.desc)
-        json.put("date", dateFormat.format(element._2.date))
+        json.put("title", element.title)
+        json.put("link", element.link)
+        json.put("desc", element.desc)
+        json.put("date", dateFormat.format(element.date))
 
         Requests.indexRequest().index("feeds").`type`("item").source(json)
       }
 
-      override def process(t: (String, Entry, Int), runtimeContext: RuntimeContext, requestIndexer: RequestIndexer): Unit = {
+      override def process(t: Entry, runtimeContext: RuntimeContext, requestIndexer: RequestIndexer): Unit = {
         requestIndexer.add(createIndexRequest(t))
       }
-    })).name("elastic output")
+    })).name("elastic output").setParallelism(4)
 
     env.execute("Read feed")
   }
