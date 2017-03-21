@@ -3,11 +3,12 @@ package uk.co.pollett.flink.quickstart.rss
 import java.net.URL
 import java.util
 
-import com.sun.syndication.feed.synd.SyndEntryImpl
+import com.sun.syndication.feed.synd.{SyndEntryImpl, SyndFeed}
 import com.sun.syndication.io.{SyndFeedInput, XmlReader}
 
 
 class Parser(url: String) {
+  var feed: SyndFeed = _
   var i: util.Iterator[_] = _
 
   def one(): Entry = {
@@ -15,7 +16,13 @@ class Parser(url: String) {
       reset()
     }
     val e = i.next().asInstanceOf[SyndEntryImpl]
-    Entry(e.getTitle, e.getDescription.getValue, e.getLink, e.getPublishedDate)
+    Entry(
+      title = e.getTitle,
+      desc = e.getDescription.getValue,
+      link = e.getLink,
+      date = e.getPublishedDate,
+      source = feed.getTitle
+    )
   }
 
   def reset(): Unit = {
@@ -23,7 +30,7 @@ class Parser(url: String) {
     println(urlu)
     val xmlreader = new XmlReader(urlu)
 
-    val feed = new SyndFeedInput().build(xmlreader)
+    feed = new SyndFeedInput().build(xmlreader)
 
     i = feed.getEntries.iterator()
   }
