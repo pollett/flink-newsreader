@@ -10,4 +10,8 @@ class PersonFinder extends NameFinder {
   override def parse(text: List[String]): List[String] = {
     findWithModel(text, nameFinder)
   }
+
+  override def close(): Unit = {
+    modelIn.close()
+  }
 }

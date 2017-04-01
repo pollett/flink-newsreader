@@ -2,12 +2,14 @@ package uk.co.pollett.flink.quickstart
 
 import java.net.{InetAddress, InetSocketAddress}
 import java.util
+import java.util.Properties
 
 import com.gravity.goose.{Configuration, Goose}
 import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.connectors.elasticsearch2.{ElasticsearchSink, ElasticsearchSinkFunction, RequestIndexer}
+import org.apache.lucene.analysis.en.EnglishAnalyzer
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.Requests
 import uk.co.pollett.flink.quickstart.nlp._
@@ -18,6 +20,9 @@ import scala.collection.immutable.HashMap
 
 object WordCount {
   def main(args: Array[String]) {
+    val properties = new Properties()
+    properties.load(getClass.getResourceAsStream("/config.properties"))
+
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace")
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
@@ -41,7 +46,7 @@ object WordCount {
     )
 
     val transportAddresses = new util.ArrayList[InetSocketAddress]
-    transportAddresses.add(new InetSocketAddress(InetAddress.getByName("hostname"), 10026))
+    transportAddresses.add(new InetSocketAddress(InetAddress.getByName(properties.getProperty("elasticHostname")), properties.getProperty("elasticPort").toInt))
 
     stream.addSink(new ElasticsearchSink(new util.HashMap[String, String](config), transportAddresses, new ElasticsearchSinkFunction[Entry] {
       def createIndexRequest(element: Entry): IndexRequest = {
@@ -66,14 +71,23 @@ object WordCount {
     val article = goose.extractContent(e.link)
 
     var tokenizer = new Tokenizer
-    var placeFinder = new PlaceFinder
-    var organizationFinder = new OrganizationFinder
-    var personFinder = new PersonFinder
-
     val bodyWords = tokenizer.tokenize(article.cleanedArticleText)
-    val places = placeFinder.parse(bodyWords)
-    val people = personFinder.parse(bodyWords)
-    val orgs = organizationFinder.parse(bodyWords)
+
+    val filteredWords = bodyWords.diff(EnglishAnalyzer.getDefaultStopSet.toList)
+
+    tokenizer.close()
+
+    var placeFinder = new PlaceFinder
+    val places = placeFinder.parse(filteredWords)
+    placeFinder.close()
+
+    var organizationFinder = new OrganizationFinder
+    val orgs = organizationFinder.parse(filteredWords)
+    organizationFinder.close()
+
+    var personFinder = new PersonFinder
+    val people = personFinder.parse(filteredWords)
+    personFinder.close()
 
     e.copy(body=Some(article.cleanedArticleText), places = Some(places), people = Some(people), organizations = Some(orgs))
   }

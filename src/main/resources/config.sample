@@ -1,0 +1,2 @@
+elasticHostname=elasticsearch.hostname.com
+elasticPort=9300

@@ -12,4 +12,8 @@ class Tokenizer {
 
     tokens.toList
   }
+
+  def close(): Unit = {
+    tokenModelIn.close()
+  }
 }

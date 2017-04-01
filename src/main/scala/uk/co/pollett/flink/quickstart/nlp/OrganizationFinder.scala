@@ -7,7 +7,11 @@ class OrganizationFinder extends NameFinder {
   private val model = new TokenNameFinderModel(modelIn)
   private val nameFinder = new NameFinderME(model)
 
-  override def parse(text: List[String]): List[String] = {
+  def parse(text: List[String]): List[String] = {
     findWithModel(text, nameFinder)
+  }
+
+  override def close(): Unit = {
+    modelIn.close()
   }
 }

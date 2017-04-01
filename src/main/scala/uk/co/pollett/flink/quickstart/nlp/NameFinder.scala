@@ -29,4 +29,6 @@ abstract class NameFinder {
   }
 
   def parse(text: List[String]): List[String]
+
+  def close()
 }
