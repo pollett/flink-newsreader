@@ -96,6 +96,11 @@ under the License.
 			<artifactId>flink-connector-elasticsearch2_2.11</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.opennlp</groupId>
+            <artifactId>opennlp-tools</artifactId>
+            <version>1.6.0</version>
+        </dependency>
 
 
         <!-- https://mvnrepository.com/artifact/com.sun.syndication/rome -->
@@ -104,6 +109,19 @@ under the License.
             <artifactId>rome</artifactId>
             <version>1.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.syncthemall/goose -->
+        <dependency>
+            <groupId>com.syncthemall</groupId>
+            <artifactId>goose</artifactId>
+            <version>2.1.25</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>5.5.4</version>
+        </dependency>
+
 
 
         <!-- explicitly add a standard loggin framework, as Flink does not (in the future) have
@@ -325,7 +343,7 @@ under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.5.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>

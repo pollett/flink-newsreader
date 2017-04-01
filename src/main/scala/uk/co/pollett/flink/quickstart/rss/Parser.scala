@@ -21,7 +21,11 @@ class Parser(url: String) {
       desc = e.getDescription.getValue,
       link = e.getLink,
       date = e.getPublishedDate,
-      source = feed.getTitle
+      source = feed.getTitle,
+      None,
+      None,
+      None,
+      None
     )
   }
 

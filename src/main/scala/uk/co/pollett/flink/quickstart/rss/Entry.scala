@@ -9,14 +9,28 @@ object Entry {
   val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 }
 
-case class Entry(title: String, desc: String, link: String, date: Date, source: String) extends Serializable {
+case class Entry(
+                  title: String,
+                  desc: String,
+                  link: String,
+                  date: Date,
+                  source: String,
+                  body: Option[String],
+                  places: Option[List[String]],
+                  people: Option[List[String]],
+                  organizations: Option[List[String]]
+                ) extends Serializable {
   def getMap: HashMap[String, String] = {
     HashMap(
-      "date" -> Entry.dateFormat.format(this.date),
-      "title" -> this.title,
-      "desc" -> this.desc,
-      "link" -> this.link,
-      "source" -> this.source
+      "date" -> Entry.dateFormat.format(date),
+      "title" -> title,
+      "desc" -> desc,
+      "link" -> link,
+      "source" -> source,
+      "body" -> (if (body.isDefined) body.get else ""),
+      "places" -> (if (places.isDefined) places.get.mkString(", ") else ""),
+      "people" -> (if (people.isDefined) people.get.mkString(", ") else ""),
+      "organizations" -> (if (organizations.isDefined) organizations.get.mkString(", ") else "")
     )
   }
 }

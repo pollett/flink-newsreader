@@ -17,7 +17,7 @@ class Source(url: String) extends RichParallelSourceFunction[Entry] {
       sourceContext.getCheckpointLock.synchronized {
         sourceContext.collect(feed.one())
       }
-      Thread.sleep(5000L)
+      Thread.sleep(15000L)
     }
   }
 }
