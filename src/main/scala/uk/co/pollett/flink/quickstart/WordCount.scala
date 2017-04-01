@@ -10,7 +10,7 @@ import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.connectors.elasticsearch2.{ElasticsearchSink, ElasticsearchSinkFunction, RequestIndexer}
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.Requests
-import uk.co.pollett.flink.quickstart.nlp.NameFinder
+import uk.co.pollett.flink.quickstart.nlp._
 import uk.co.pollett.flink.quickstart.rss.{Entry, Source}
 
 import scala.collection.JavaConversions._
@@ -65,12 +65,15 @@ object WordCount {
     val goose = new Goose(c)
     val article = goose.extractContent(e.link)
 
-    val nf = new NameFinder
+    var tokenizer = new Tokenizer
+    var placeFinder = new PlaceFinder
+    var organizationFinder = new OrganizationFinder
+    var personFinder = new PersonFinder
 
-    val bodyWords = nf.tokenize(article.cleanedArticleText)
-    val places = nf.findLocation(bodyWords)
-    val people = nf.findPerson(bodyWords)
-    val orgs = nf.findOrganization(bodyWords)
+    val bodyWords = tokenizer.tokenize(article.cleanedArticleText)
+    val places = placeFinder.parse(bodyWords)
+    val people = personFinder.parse(bodyWords)
+    val orgs = organizationFinder.parse(bodyWords)
 
     e.copy(body=Some(article.cleanedArticleText), places = Some(places), people = Some(people), organizations = Some(orgs))
   }
