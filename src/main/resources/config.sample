@@ -1,2 +1,4 @@
 elasticHostname=elasticsearch.hostname.com
 elasticPort=9300
+
+feeds=BBC,http://feeds.bbci.co.uk/news/rss.xml

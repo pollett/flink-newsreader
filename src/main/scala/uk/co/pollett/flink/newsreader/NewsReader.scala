@@ -7,7 +7,7 @@ import java.util.Properties
 import com.gravity.goose.{Configuration, Goose}
 import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.api.scala._
-import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.connectors.elasticsearch2.{ElasticsearchSink, ElasticsearchSinkFunction, RequestIndexer}
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.Requests
@@ -22,13 +22,23 @@ object NewsReader {
     val properties = new Properties()
     properties.load(getClass.getResourceAsStream("/config.properties"))
 
-    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace")
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
-    val reutersSource = env.addSource(new Source("http://feeds.reuters.com/Reuters/UKTopNews?format=rss")).name("Reuters source")
-    val bbcSource = env.addSource(new Source("http://feeds.bbci.co.uk/news/rss.xml")).name("BBC Source")
+    val feeds = properties.getProperty("feeds")
+    var sources: DataStream[Entry] = null
 
-    val aggregate = reutersSource.union(bbcSource)
+    feeds.split(";").foreach((f) => {
+      var feedInfo = f.split(",").toList
+      var source = env.addSource(new Source(feedInfo.get(1))).name(feedInfo.get(0) + " Source")
+
+      if(sources == null) {
+        sources = source
+      }else{
+        sources = sources.union(source)
+      }
+    })
+
+    val aggregate = sources
       .map(e => (e.link, e)).name("process entry")
       .keyBy(0)
       .flatMap(new DuplicateFilter[(String, Entry)]()).name("dedup")
