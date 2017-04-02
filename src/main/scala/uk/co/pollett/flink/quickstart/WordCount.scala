@@ -9,7 +9,6 @@ import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.connectors.elasticsearch2.{ElasticsearchSink, ElasticsearchSinkFunction, RequestIndexer}
-import org.apache.lucene.analysis.en.EnglishAnalyzer
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.Requests
 import uk.co.pollett.flink.quickstart.nlp._
@@ -73,21 +72,14 @@ object WordCount {
     var tokenizer = new Tokenizer
     val bodyWords = tokenizer.tokenize(article.cleanedArticleText)
 
-    val filteredWords = bodyWords.diff(EnglishAnalyzer.getDefaultStopSet.toList)
-
-    tokenizer.close()
-
     var placeFinder = new PlaceFinder
-    val places = placeFinder.parse(filteredWords)
-    placeFinder.close()
+    val places = placeFinder.parse(bodyWords)
 
     var organizationFinder = new OrganizationFinder
-    val orgs = organizationFinder.parse(filteredWords)
-    organizationFinder.close()
+    val orgs = organizationFinder.parse(bodyWords)
 
     var personFinder = new PersonFinder
-    val people = personFinder.parse(filteredWords)
-    personFinder.close()
+    val people = personFinder.parse(bodyWords)
 
     e.copy(body=Some(article.cleanedArticleText), places = Some(places), people = Some(people), organizations = Some(orgs))
   }
