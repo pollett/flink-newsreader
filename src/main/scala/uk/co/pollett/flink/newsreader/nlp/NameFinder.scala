@@ -17,7 +17,7 @@ abstract class NameFinder {
 
       for (name <- nameSpans) {
         val sb: StringBuilder = new StringBuilder
-        for (si <- name.getStart to name.getEnd) {
+        for (si <- name.getStart until name.getEnd) {
           sb.append(text(si).trim).append(" ")
         }
         out += sb.toString().trim
