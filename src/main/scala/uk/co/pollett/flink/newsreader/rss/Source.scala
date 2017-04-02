@@ -1,4 +1,4 @@
-package uk.co.pollett.flink.quickstart.rss
+package uk.co.pollett.flink.newsreader.rss
 
 import org.apache.flink.streaming.api.functions.source.RichParallelSourceFunction
 import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext

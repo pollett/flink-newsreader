@@ -1,4 +1,4 @@
-package uk.co.pollett.flink.quickstart.rss
+package uk.co.pollett.flink.newsreader.rss
 
 import org.apache.flink.streaming.util.serialization.SerializationSchema
 

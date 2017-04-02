@@ -21,13 +21,13 @@ under the License.
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.myorg.quickstart</groupId>
-	<artifactId>quickstart</artifactId>
+	<groupId>uk.co.pollett.flink.newsreader</groupId>
+	<artifactId>newsreader</artifactId>
 	<version>0.1</version>
 	<packaging>jar</packaging>
 
-	<name>Flink Quickstart Job</name>
-	<url>http://www.myorganization.org</url>
+	<name>Flink News Reader Job</name>
+	<url>http://www.pollett.co.uk</url>
 
 	<repositories>
 		<repository>
@@ -49,30 +49,6 @@ under the License.
 		<slf4j.version>1.7.7</slf4j.version>
 		<log4j.version>1.2.17</log4j.version>
 	</properties>
-
-	<!-- 
-		
-		Execute "mvn clean package -Pbuild-jar"
-		to build a jar file out of this project!
-
-		How to use the Flink Quickstart pom:
-
-		a) Adding new dependencies:
-			You can add dependencies to the list below.
-			Please check if the maven-shade-plugin below is filtering out your dependency
-			and remove the exclude from there.
-
-		b) Build a jar for running on the cluster:
-			There are two options for creating a jar from this project
-
-			b.1) "mvn clean package" -> this will create a fat jar which contains all
-					dependencies necessary for running the jar created by this pom in a cluster.
-					The "maven-shade-plugin" excludes everything that is provided on a running Flink cluster.
-
-			b.2) "mvn clean package -Pbuild-jar" -> This will also create a fat-jar, but with much
-					nicer dependency exclusion handling. This approach is preferred and leads to
-					much cleaner jar files.
-	-->
 
 	<dependencies>
 		<!-- Apache Flink dependencies -->
@@ -331,7 +307,7 @@ under the License.
 									<resource>META-INF/services/org.apache.lucene.codecs.PostingsFormat</resource>
 								</transformer>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>uk.co.pollett.flink.quickstart.WordCount</mainClass>
+									<mainClass>uk.co.pollett.flink.newsreader.NewsReader</mainClass>
 								</transformer>
 							</transformers>
 							<createDependencyReducedPom>false</createDependencyReducedPom>

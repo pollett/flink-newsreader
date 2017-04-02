@@ -1,4 +1,4 @@
-package uk.co.pollett.flink.quickstart.nlp
+package uk.co.pollett.flink.newsreader.nlp
 
 import opennlp.tools.util.Span
 import opennlp.tools.namefind.NameFinderME

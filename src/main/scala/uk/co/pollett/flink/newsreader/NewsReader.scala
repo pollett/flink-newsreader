@@ -1,4 +1,4 @@
-package uk.co.pollett.flink.quickstart
+package uk.co.pollett.flink.newsreader
 
 import java.net.{InetAddress, InetSocketAddress}
 import java.util
@@ -11,13 +11,13 @@ import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.connectors.elasticsearch2.{ElasticsearchSink, ElasticsearchSinkFunction, RequestIndexer}
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.Requests
-import uk.co.pollett.flink.quickstart.nlp._
-import uk.co.pollett.flink.quickstart.rss.{Entry, Source}
+import uk.co.pollett.flink.newsreader.nlp._
+import uk.co.pollett.flink.newsreader.rss.{Entry, Source}
 
 import scala.collection.JavaConversions._
 import scala.collection.immutable.HashMap
 
-object WordCount {
+object NewsReader {
   def main(args: Array[String]) {
     val properties = new Properties()
     properties.load(getClass.getResourceAsStream("/config.properties"))

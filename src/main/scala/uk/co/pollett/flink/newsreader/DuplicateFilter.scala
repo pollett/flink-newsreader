@@ -1,4 +1,4 @@
-package uk.co.pollett.flink.quickstart
+package uk.co.pollett.flink.newsreader
 
 import org.apache.flink.api.common.functions.RichFlatMapFunction
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
