@@ -1,11 +1,13 @@
 package uk.co.pollett.flink.newsreader.nlp
 
-import opennlp.tools.util.Span
 import opennlp.tools.namefind.NameFinderME
+import opennlp.tools.util.Span
 
 import scala.collection.mutable.ListBuffer
 
 abstract class NameFinder {
+  def parse(text: List[String]): List[String]
+
   protected def findWithModel(text: List[String], model: NameFinderME): List[String] = {
     var out = ListBuffer[String]()
 
@@ -27,6 +29,4 @@ abstract class NameFinder {
         List("Exception", e.getMessage)
     }
   }
-
-  def parse(text: List[String]): List[String]
 }

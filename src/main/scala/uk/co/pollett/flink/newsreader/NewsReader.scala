@@ -4,7 +4,6 @@ import java.net.{InetAddress, InetSocketAddress}
 import java.util
 import java.util.Properties
 
-import com.gravity.goose.{Configuration, Goose}
 import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
@@ -31,9 +30,9 @@ object NewsReader {
       var feedInfo = f.split(",").toList
       var source = env.addSource(new Source(feedInfo.get(1))).name(feedInfo.get(0) + " Source")
 
-      if(sources == null) {
+      if (sources == null) {
         sources = source
-      }else{
+      } else {
         sources = sources.union(source)
       }
     })
@@ -47,7 +46,7 @@ object NewsReader {
       .filter {
         !_.title.isEmpty
       }.name("remove blanks")
-      .map(e => enrich(e)).name("enrich").startNewChain()
+      .map(e => Enrich.enrich(e)).name("enrich").startNewChain()
 
     val config = HashMap(
       "cluster.name" -> "elasticsearch",
@@ -71,26 +70,5 @@ object NewsReader {
     })).name("elastic output").setParallelism(1)
 
     env.execute("Read feed")
-  }
-
-  def enrich(e: Entry): Entry = {
-    var c = new Configuration
-    c.enableImageFetching = false
-    val goose = new Goose(c)
-    val article = goose.extractContent(e.link)
-
-    var tokenizer = new Tokenizer
-    val bodyWords = tokenizer.tokenize(article.cleanedArticleText)
-
-    var placeFinder = new PlaceFinder
-    val places = placeFinder.parse(bodyWords)
-
-    var organizationFinder = new OrganizationFinder
-    val orgs = organizationFinder.parse(bodyWords)
-
-    var personFinder = new PersonFinder
-    val people = personFinder.parse(bodyWords)
-
-    e.copy(body=Some(article.cleanedArticleText), places = Some(places), people = Some(people), organizations = Some(orgs))
   }
 }

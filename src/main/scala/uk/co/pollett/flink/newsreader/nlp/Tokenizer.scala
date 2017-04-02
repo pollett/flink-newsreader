@@ -13,7 +13,7 @@ class Tokenizer {
   modelIn.close()
 
   def tokenize(text: String): List[String] = {
-    val tokens = tokenizer.tokenize(text).map{
+    val tokens = tokenizer.tokenize(text).map {
       _.trim()
     }
       .filterNot(_.isEmpty)
