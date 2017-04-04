@@ -1,7 +1,5 @@
 package uk.co.pollett.flink.newsreader.nlp.classify
 
-import java.io.FileInputStream
-
 import opennlp.tools.doccat.{DoccatModel, DocumentCategorizerME, DocumentSampleStream}
 import opennlp.tools.util.PlainTextByLineStream
 
