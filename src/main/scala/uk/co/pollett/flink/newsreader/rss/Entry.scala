@@ -18,7 +18,8 @@ case class Entry(
                   body: Option[String],
                   places: Option[List[String]],
                   people: Option[List[String]],
-                  organizations: Option[List[String]]
+                  organizations: Option[List[String]],
+                  sentiment: Option[String]
                 ) extends Serializable {
   def getMap: HashMap[String, String] = {
     HashMap(
@@ -30,7 +31,8 @@ case class Entry(
       "body" -> (if (body.isDefined) body.get else ""),
       "places" -> (if (places.isDefined) places.get.mkString(", ") else ""),
       "people" -> (if (people.isDefined) people.get.mkString(", ") else ""),
-      "organizations" -> (if (organizations.isDefined) organizations.get.mkString(", ") else "")
+      "organizations" -> (if (organizations.isDefined) organizations.get.mkString(", ") else ""),
+      "sentiment" -> (if (sentiment.isDefined) sentiment.get else "")
     )
   }
 }

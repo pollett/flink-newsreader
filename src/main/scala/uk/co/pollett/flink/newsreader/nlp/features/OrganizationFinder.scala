@@ -1,4 +1,4 @@
-package uk.co.pollett.flink.newsreader.nlp
+package uk.co.pollett.flink.newsreader.nlp.features
 
 import opennlp.tools.namefind.{NameFinderME, TokenNameFinderModel}
 

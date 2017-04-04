@@ -1,9 +1,9 @@
-package uk.co.pollett.flink.newsreader.nlp
+package uk.co.pollett.flink.newsreader.nlp.features
 
 import opennlp.tools.namefind.{NameFinderME, TokenNameFinderModel}
 
-class PlaceFinder extends NameFinder {
-  private val modelIn = getClass.getResourceAsStream("/en-ner-location.bin")
+class PersonFinder extends NameFinder {
+  private val modelIn = getClass.getResourceAsStream("/en-ner-person.bin")
   private val model = new TokenNameFinderModel(modelIn)
   private val nameFinder = new NameFinderME(model)
   modelIn.close()
