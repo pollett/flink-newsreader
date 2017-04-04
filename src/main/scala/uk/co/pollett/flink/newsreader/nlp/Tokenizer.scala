@@ -17,7 +17,7 @@ class Tokenizer {
       _.trim()
     }
       .filterNot(_.isEmpty)
-      .filterNot((e) => Tokenizer.stopWords.contains(e.toLowerCase()))
+//      .filterNot((e) => Tokenizer.stopWords.contains(e.toLowerCase()))
       .filterNot(_.forall(!_.isLetter))
 
     tokens.toList
