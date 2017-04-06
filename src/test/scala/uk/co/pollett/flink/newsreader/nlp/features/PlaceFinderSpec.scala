@@ -1,7 +1,6 @@
-package uk.co.pollett.flink.newsreader.nlp
+package uk.co.pollett.flink.newsreader.nlp.features
 
 import org.scalatest.FlatSpec
-import uk.co.pollett.flink.newsreader.nlp.features.PlaceFinder
 
 class PlaceFinderSpec extends FlatSpec {
 

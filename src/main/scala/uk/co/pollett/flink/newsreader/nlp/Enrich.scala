@@ -7,23 +7,23 @@ import uk.co.pollett.flink.newsreader.rss.Entry
 
 object Enrich {
   def enrich(e: Entry): Entry = {
-
     var c = new Configuration
     c.enableImageFetching = false
-    val goose = new Goose(c)
+    def goose = new Goose(c)
+
     val article = goose.extractContent(e.link)
 
     var tokenizer = new Tokenizer
     val bodyWords = tokenizer.tokenize(article.cleanedArticleText)
 
-    var placeFinder = new PlaceFinder
-    val places = placeFinder.parse(bodyWords)
+    var placeF = new PlaceFinder
+    val places = placeF.parse(bodyWords)
 
-    var organizationFinder = new OrganizationFinder
-    val orgs = organizationFinder.parse(bodyWords)
+    var organizationF = new OrganizationFinder
+    val orgs = organizationF.parse(bodyWords)
 
-    var personFinder = new PersonFinder
-    val people = personFinder.parse(bodyWords)
+    var personF = new PersonFinder
+    val people = personF.parse(bodyWords)
 
     var sentimentFinder = new Sentiment
     val sentiment = sentimentFinder.categorize(bodyWords)

@@ -6,7 +6,7 @@ import org.apache.flink.configuration.Configuration
 import org.apache.flink.util.Collector
 
 object DuplicateFilter {
-  def descriptor: ValueStateDescriptor[Boolean] = new ValueStateDescriptor[Boolean]("seen", classOf[Boolean])
+  val descriptor: ValueStateDescriptor[Boolean] = new ValueStateDescriptor[Boolean]("seen", classOf[Boolean])
 }
 
 class DuplicateFilter[T] extends RichFlatMapFunction[T, T] {

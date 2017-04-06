@@ -83,6 +83,14 @@ under the License.
 			<groupId>org.scalatest</groupId>
 			<artifactId>scalatest_2.10</artifactId>
 			<version>3.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.scalamock/scalamock-scalatest-support_2.10 -->
+		<dependency>
+			<groupId>org.scalamock</groupId>
+			<artifactId>scalamock-scalatest-support_2.10</artifactId>
+			<version>3.5.0</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.sun.syndication/rome -->
         <dependency>
